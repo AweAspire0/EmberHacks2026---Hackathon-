@@ -1,0 +1,20 @@
+.btn {
+  border-radius: 0.5rem;
+  border: 1px solid rgb(38 38 38);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color .12s, border-color .12s, opacity .12s;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ghost { background: rgb(10 10 10); color: rgb(212 212 212); }
+.btn-ghost:hover:not(:disabled) { background: rgb(23 23 23); border-color: rgb(64 64 64); }
+.btn-primary { background: rgb(245 245 245); color: rgb(10 10 10); border-color: rgb(245 245 245); }
+.btn-primary:hover:not(:disabled) { background: rgb(212 212 212); }
+.btn-accent { background: rgb(4 120 87); border-color: rgb(5 150 105); color: #fff; }
+.btn-accent:hover:not(:disabled) { background: rgb(5 150 105); }
+.btn-event {
+  background: rgb(23 23 23); border-color: rgb(64 64 64); color: rgb(229 229 229);
+  border-radius: 9999px; padding: .4rem .9rem; font-size: .8125rem;
+}
+.btn-event:hover { background: rgb(4 120 87); border-color: rgb(5 150 105); }

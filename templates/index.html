@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper Machine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="h-full bg-neutral-950 text-neutral-100 antialiased">
+
+<div class="mx-auto flex h-full max-w-[1400px] flex-col gap-4 p-4 lg:p-6">
+
+  <header class="flex flex-wrap items-baseline justify-between gap-3 border-b border-neutral-800 pb-4">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">Paper Machine</h1>
+      <p class="text-sm text-neutral-400">Draw a machine on paper. Photograph it. Watch it run.</p>
+    </div>
+    <div id="model-badge" class="rounded-full border border-neutral-800 px-3 py-1 font-mono text-xs text-neutral-500">
+      checking&hellip;
+    </div>
+  </header>
+
+  {% if not has_key %}
+  <div id="key-warning" class="rounded-lg border border-amber-800/60 bg-amber-950/40 px-4 py-3 text-sm text-amber-200">
+    No <code class="font-mono">GEMINI_API_KEY</code> in <code class="font-mono">.env</code> yet — the sample machine below
+    still runs, but photographing a drawing will not work until you add a key and restart.
+  </div>
+  {% endif %}
+
+  <main class="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[360px_1fr]">
+
+    <!-- ── Left column: capture + inspector ───────────────────────────── -->
+    <section class="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
+
+      <div class="rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
+        <h2 class="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">1 &middot; Capture the drawing</h2>
+
+        <div id="camera-wrap" class="relative mb-3 hidden overflow-hidden rounded-lg border border-neutral-800 bg-black">
+          <video id="video" playsinline muted class="block max-h-64 w-full object-contain"></video>
+          <div class="pointer-events-none absolute inset-3 rounded border-2 border-dashed border-white/25"></div>
+        </div>
+
+        <img id="preview" alt="Captured drawing" class="mb-3 hidden max-h-64 w-full rounded-lg border border-neutral-800 object-contain">
+
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btn-camera" class="btn btn-ghost">Use camera</button>
+          <button id="btn-shoot" class="btn btn-primary hidden">Capture</button>
+          <label class="btn btn-ghost cursor-pointer text-center">
+            Upload photo
+            <input id="file-input" type="file" accept="image/*" capture="environment" class="hidden">
+          </label>
+          <button id="btn-sample" class="btn btn-ghost">Load sample</button>
+        </div>
+
+        <input id="hint" type="text" placeholder="Optional hint, e.g. &quot;it's a vending machine&quot;"
+               class="mt-2 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm placeholder:text-neutral-600 focus:border-neutral-600 focus:outline-none">
+
+        <button id="btn-compile" class="btn btn-accent mt-2 w-full" disabled>Compile with Gemini</button>
+        <p id="status" class="mt-2 min-h-[1.25rem] text-xs text-neutral-500"></p>
+      </div>
+
+      <div id="warnings-card" class="hidden rounded-xl border border-amber-900/50 bg-amber-950/20 p-4">
+        <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-amber-500">How Gemini read it</h2>
+        <ul id="warnings" class="space-y-1 text-sm text-amber-200/80"></ul>
+      </div>
+
+      <div class="flex min-h-0 flex-1 flex-col rounded-xl border border-neutral-800 bg-neutral-900/50 p-4">
+        <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">Execution trace</h2>
+        <ol id="trace" class="min-h-0 flex-1 space-y-1 overflow-y-auto font-mono text-xs text-neutral-400"></ol>
+      </div>
+    </section>
+
+    <!-- ── Right column: the running machine ──────────────────────────── -->
+    <section class="flex min-h-0 flex-col gap-3 rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 id="machine-title" class="text-lg font-medium">Turnstile <span class="text-sm text-neutral-500">(sample)</span></h2>
+          <p class="text-xs text-neutral-500">Currently in <span id="current-state" class="font-mono text-emerald-400">&mdash;</span></p>
+        </div>
+        <div class="flex gap-2">
+          <button id="btn-auto" class="btn btn-ghost text-xs">Auto-run</button>
+          <button id="btn-reset" class="btn btn-ghost text-xs">Reset</button>
+        </div>
+      </div>
+
+      <!-- min-height so the canvas can never be squeezed to nothing when the
+           layout stacks on a narrow window -->
+      <div class="relative min-h-[360px] flex-1 overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950">
+        <canvas id="canvas" class="block h-full w-full"></canvas>
+      </div>
+
+      <div>
+        <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+          2 &middot; Fire an event <span class="font-normal normal-case tracking-normal text-neutral-600">— or press the number key</span>
+        </h3>
+        <div id="transitions" class="flex flex-wrap gap-2"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
